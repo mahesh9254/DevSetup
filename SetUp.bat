@@ -6,8 +6,6 @@ start Postman-win64-Setup.exe
 powershell -c "Invoke-WebRequest -Uri 'https://dl4.cdn.filezilla-project.org/client/FileZilla_3.67.0_win64-setup.exe?h=iC30Fits2un4YM_skamoew&x=1715167521' -OutFile 'FileZilla_3.67.0_win64_sponsored2-setup.exe'"
 start FileZilla_3.67.0_win64_sponsored2-setup.exe
 
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-
 powershell -c "Invoke-WebRequest -Uri 'https://www.fortinet.com/support/product-downloads/forticlient' -OutFile 'forticlient.exe'"
 start forticlient.exe
 
