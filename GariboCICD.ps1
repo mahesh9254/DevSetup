@@ -1,10 +1,10 @@
 ﻿
 [CmdletBinding()]
  param(
-     <#[Parameter(Mandatory)]
+     [Parameter(Mandatory)]
 
      [string]$RepositoryURL,
-	 [Parameter(Mandatory)]
+	 <#[Parameter(Mandatory)]
 
      [string]$ProjectName,#>
 	 
@@ -22,7 +22,7 @@
      [string]$ServerFolder
 
  )
-git clone https://mahesh9254@bitbucket.org/q3info/wms_api.git
+git clone $RepositoryURL
 cd wms_api
 git switch $BranchName
 git pull
@@ -73,3 +73,9 @@ foreach ($folder in $folders)
 #$webclient.UploadFile($uri, $FilePath)
 
 $webclient.Dispose()
+cd..
+cd..
+cd..
+cd..
+cd..
+cd..
