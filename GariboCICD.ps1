@@ -1,26 +1,31 @@
 ﻿
 [CmdletBinding()]
  param(
-     [Parameter(Mandatory)]
+     <#[Parameter(Mandatory)]
 
      [string]$RepositoryURL,
+	 [Parameter(Mandatory)]
+
+     [string]$ProjectName,#>
+	 
+	 [Parameter(Mandatory)]
+
+     [string]$BranchName,
+
+     <#[Parameter(Mandatory)]
+
+     [pscredential]$Credential,#>
+     
 
      [Parameter(Mandatory)]
 
-     [pscredential]$Credential,
-
-     [Parameter(Mandatory)]
-
-     [string]$FilePath,
-
-     [Parameter(Mandatory)]
-
-     [string]$FtpServerHost
+     [string]$ServerFolder
 
  )
-git clone $RepositoryURL
-cd test1
-git switch master
+git clone https://mahesh9254@bitbucket.org/q3info/wms_api.git
+cd wms_api
+git switch $BranchName
+git pull
 cd WMS.ServiceApp.Adani
 dotnet restore
 dotnet build
@@ -34,14 +39,14 @@ $files | Remove-Item
 
 $webclient = New-Object System.Net.WebClient
 
-$ftpPassword = $Credential.GetNetworkCredential().Password
+<#$ftpPassword = $Credential.GetNetworkCredential().Password
 
 Write-Host $Credential.Username
-Write-Host $ftpPassword
-$webclient.Credentials = New-Object System.Net.NetworkCredential($Credential.Username, $ftpPassword)
+Write-Host $ftpPassword#>
+$webclient.Credentials = New-Object System.Net.NetworkCredential("Adani\MYWORKAPP", "Wellc0m3@2024")
 
 #$remoteFileName = $FilePath | Split-Path -Leaf
-$uri = New-Object System.Uri("ftp://$FtpServerHost/Testcd")
+$uri = New-Object System.Uri("ftp://10.44.3.82/$ServerFolder")
 
 $files = Get-ChildItem -path "$path"  | Where-Object{!$_.PSIsContainer}
 
