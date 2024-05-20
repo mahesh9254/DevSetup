@@ -1,5 +1,5 @@
 
-using Microsoft.Extensions.Logging.ApplicationInsights;
+using System.Management.Automation;
 
 using System.Text.Json;
 
@@ -31,6 +31,9 @@ app.UseHttpsRedirection();
 app.MapPost("/apiCICD", (ILogger<Program> logger, BitbucketPayload bitbucketPayload) =>
 {
     logger.LogInformation(JsonSerializer.Serialize(bitbucketPayload));
+    PowerShell ps = PowerShell.Create();
+    ps.AddScript(@"D:\PSScripts\MyScript.ps1").Invoke();
+
 }).WithOpenApi();
 app.Run();
 
