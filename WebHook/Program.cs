@@ -1,5 +1,9 @@
-using System.Web.Http;
+
 using Microsoft.Extensions.Logging.ApplicationInsights;
+
+using System.Text.Json;
+
+using WebHook.Payloods;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,15 +27,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
 app.UseHttpsRedirection();
-app.UseRouting();
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-HttpConfiguration httpConfiguration = new HttpConfiguration();
-httpConfiguration.InitializeReceiveBitbucketWebHooks();
+app.MapPost("/apiCICD", (ILogger<Program> logger, BitbucketPayload bitbucketPayload) =>
+{
+    logger.LogInformation(JsonSerializer.Serialize(bitbucketPayload));
+}).WithOpenApi();
 app.Run();
 
 
