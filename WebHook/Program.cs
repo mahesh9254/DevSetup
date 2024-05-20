@@ -13,6 +13,7 @@ builder.Logging.AddApplicationInsights(
             config.ConnectionString = builder.Configuration.GetSection("ApplicationInsights").GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING"),
             configureApplicationInsightsLoggerOptions: (options) => { }
     );
+builder.Services.AddControllers();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -24,11 +25,11 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseHttpsRedirection();
-app.MapGet("/apiCICD", () =>
-{
-    
-})
-.WithOpenApi();
+app.UseRouting();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
 HttpConfiguration httpConfiguration = new HttpConfiguration();
 httpConfiguration.InitializeReceiveBitbucketWebHooks();
 app.Run();
