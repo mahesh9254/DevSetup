@@ -27,12 +27,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.MapPost("/apiCICD", (ILogger<Program> logger, BitbucketPayload bitbucketPayload) =>
 {
     logger.LogInformation(JsonSerializer.Serialize(bitbucketPayload));
     PowerShell ps = PowerShell.Create();
-    ps.AddScript(@"D:\PSScripts\MyScript.ps1").Invoke();
+    ps.AddScript(Directory.GetCurrentDirectory() + @"\GariboCICD.ps1").Invoke();
 
 }).WithOpenApi();
 app.Run();
