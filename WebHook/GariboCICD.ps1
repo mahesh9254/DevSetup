@@ -1,4 +1,5 @@
 ﻿
+
 [CmdletBinding()]
  param(
      [Parameter(Mandatory)]
@@ -23,7 +24,7 @@
 
  )
 git clone $RepositoryURL
-cd wms_api
+cd test1
 git switch $BranchName
 git pull
 cd WMS.ServiceApp.Adani
@@ -53,7 +54,8 @@ $files = Get-ChildItem -path "$path"  | Where-Object{!$_.PSIsContainer}
 foreach ($file in $files)
 {
     Write-Host "Uploading $file"
-    $webclient.UploadFile("$uri/$file", $file.FullName)
+    $Basename = $file.Name
+    $webclient.UploadFile("$uri/$Basename", "$file")
 } 
 <#
 $folders = $files | Where-Object{$_.PSIsContainer}
@@ -66,7 +68,7 @@ foreach ($folder in $folders)
    foreach ($file in $files)
    {
     Write-Host "Uploading $file"
-    $webclient.UploadFile("$uri/$file", $file.FullName)
+    $webclient.UploadFile("$uri/$Basename", "$file")
    } 
     
 }#>

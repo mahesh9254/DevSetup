@@ -1,6 +1,6 @@
 
 using System.Management.Automation;
-
+using System.Management.Automation.Runspaces;
 using System.Text.Json;
 
 using WebHook.Payloods;
@@ -28,12 +28,29 @@ if (app.Environment.IsDevelopment())
 }
 
 //app.UseHttpsRedirection();
-app.MapPost("/apiCICD", (ILogger<Program> logger, BitbucketPayload bitbucketPayload) =>
+app.MapPost("/apiCICD", (ILogger<Program> logger , BitbucketPayload bitbucketPayload) =>
 {
-    logger.LogInformation(JsonSerializer.Serialize(bitbucketPayload));
-    PowerShell ps = PowerShell.Create();
-    ps.AddScript(Directory.GetCurrentDirectory() + @"\GariboCICD.ps1").Invoke();
+      logger.LogInformation(JsonSerializer.Serialize(bitbucketPayload));
+    
 
+    using(var ps = PowerShell.Create())
+    {
+        InitialSessionState initialSessionState = InitialSessionState.CreateDefault();
+        Runspace rs = RunspaceFactory.CreateRunspace(initialSessionState);
+        logger.LogInformation("Power shell script start");
+
+    ps.AddScript(File.ReadAllText("./GariboCICD.ps1"));
+    ps.AddParameter("RepositoryURL", "https://Mahesh92549254@bitbucket.org/maheshtest9254/test1.git");
+    ps.AddParameter("BranchName", "master");
+    ps.AddParameter("ServerFolder", "Testcd");
+        rs.Open();
+        ps.Runspace = rs;
+    var results = ps.Invoke<string>();
+        var error = ps.Streams.Error;   
+
+    logger.LogInformation(results.FirstOrDefault());
+    logger.LogInformation("Power shell script end");
+    }
 }).WithOpenApi();
 app.Run();
 
