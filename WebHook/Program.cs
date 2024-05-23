@@ -30,8 +30,7 @@ if (app.Environment.IsDevelopment())
 //app.UseHttpsRedirection();
 app.MapPost("/apiCICD", (ILogger<Program> logger , BitbucketPayload bitbucketPayload) =>
 {
-      logger.LogInformation(JsonSerializer.Serialize(bitbucketPayload));
-    
+       
 
     using(var ps = PowerShell.Create())
     {
@@ -40,15 +39,21 @@ app.MapPost("/apiCICD", (ILogger<Program> logger , BitbucketPayload bitbucketPay
         logger.LogInformation("Power shell script start");
 
     ps.AddScript(File.ReadAllText("./GariboCICD.ps1"));
-    ps.AddParameter("RepositoryURL", "https://Mahesh92549254@bitbucket.org/maheshtest9254/test1.git");
-    ps.AddParameter("BranchName", "master");
-    ps.AddParameter("ServerFolder", "Testcd");
+        logger.LogInformation("RepositoryURL: https://Mahesh92549254@bitbucket.org/maheshtest9254/test1.git");
+        ps.AddParameter("RepositoryURL", "https://Mahesh92549254@bitbucket.org/maheshtest9254/test1.git");
+        logger.LogInformation(string.Format("ProjectName: {0}", bitbucketPayload?.repository?.name));
+        ps.AddParameter("ProjectName", bitbucketPayload?.repository?.name);
+        logger.LogInformation(string.Format("BranchName: {0}", bitbucketPayload?.commit_status?.refname));
+        ps.AddParameter("BranchName", bitbucketPayload?.commit_status?.refname);
+        logger.LogInformation(string.Format("ServerFolder: {0}", bitbucketPayload?.repository?.name));
+        ps.AddParameter("ServerFolder", bitbucketPayload?.repository?.name);
         rs.Open();
         ps.Runspace = rs;
-    var results = ps.Invoke<string>();
-        var error = ps.Streams.Error;   
+        var results = ps.Invoke<string>();
+        var error = ps.Streams.Error;
+        logger.LogInformation(string.Format(JsonSerializer.Serialize(error)));
 
-    logger.LogInformation(results.FirstOrDefault());
+        logger.LogInformation(results.FirstOrDefault());
     logger.LogInformation("Power shell script end");
     }
 }).WithOpenApi();

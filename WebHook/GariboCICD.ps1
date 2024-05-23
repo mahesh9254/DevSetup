@@ -5,15 +5,14 @@
      [Parameter(Mandatory)]
 
      [string]$RepositoryURL,
-	 <#[Parameter(Mandatory)]
+     [Parameter(Mandatory)]
 
-     [string]$ProjectName,#>
-	 
-	 [Parameter(Mandatory)]
+     [string]$ProjectName,
+     [Parameter(Mandatory)]
 
      [string]$BranchName,
 
-     <#[Parameter(Mandatory)]
+     <# [Parameter(Mandatory)]
 
      [pscredential]$Credential,#>
      
@@ -24,7 +23,7 @@
 
  )
 git clone $RepositoryURL
-cd test1
+cd $ProjectName
 git switch $BranchName
 git pull
 cd WMS.ServiceApp.Adani
