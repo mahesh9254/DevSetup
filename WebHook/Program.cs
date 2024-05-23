@@ -41,10 +41,13 @@ app.MapPost("/apiCICD", (ILogger<Program> logger , BitbucketPayload bitbucketPay
     ps.AddScript(File.ReadAllText("./GariboCICD.ps1"));
         logger.LogInformation("RepositoryURL: https://Mahesh92549254@bitbucket.org/maheshtest9254/test1.git");
         ps.AddParameter("RepositoryURL", "https://Mahesh92549254@bitbucket.org/maheshtest9254/test1.git");
-        logger.LogInformation(string.Format("ProjectName: {0}", bitbucketPayload?.repository?.name));
-        ps.AddParameter("ProjectName", bitbucketPayload?.repository?.name);
-        logger.LogInformation(string.Format("BranchName: {0}", bitbucketPayload?.commit_status?.refname));
-        ps.AddParameter("BranchName", bitbucketPayload?.commit_status?.refname);
+
+        logger.LogInformation(string.Format("ProjectName: {0}", bitbucketPayload?.repository?.name?.ToLower()));
+        ps.AddParameter("ProjectName", bitbucketPayload?.repository?.name?.ToLower());
+
+        logger.LogInformation(string.Format("BranchName: {0}", bitbucketPayload?.pullrequest?.destination?.branch?.name));
+        ps.AddParameter("BranchName", bitbucketPayload?.pullrequest?.destination?.branch?.name);
+
         logger.LogInformation(string.Format("ServerFolder: {0}", bitbucketPayload?.repository?.name));
         ps.AddParameter("ServerFolder", bitbucketPayload?.repository?.name);
         rs.Open();
@@ -55,6 +58,8 @@ app.MapPost("/apiCICD", (ILogger<Program> logger , BitbucketPayload bitbucketPay
 
         logger.LogInformation(results.FirstOrDefault());
     logger.LogInformation("Power shell script end");
+
+        return Task.CompletedTask;
     }
 }).WithOpenApi();
 app.Run();

@@ -1,20 +1,26 @@
-﻿namespace WebHook.Payloods
+﻿using Newtonsoft.Json;
+
+namespace WebHook.Payloods
 {
     public class BitbucketPayload
     {
         public Repository repository { get; set; }
         public Actor actor { get; set; }
-        public Commit_Status commit_status { get; set; }
+        public Pullrequest pullrequest { get; set; }
+    }
+    public class Activity
+    {
+        public string href { get; set; }
     }
 
-    // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
     public class Actor
     {
         public string display_name { get; set; }
         public Links links { get; set; }
         public string type { get; set; }
         public string uuid { get; set; }
-        public string username { get; set; }
+        public string account_id { get; set; }
+        public string nickname { get; set; }
     }
 
     public class Approve
@@ -24,14 +30,32 @@
 
     public class Author
     {
+        public string display_name { get; set; }
+        public Links links { get; set; }
         public string type { get; set; }
-        public string raw { get; set; }
-        public User user { get; set; }
+        public string uuid { get; set; }
+        public string account_id { get; set; }
+        public string nickname { get; set; }
     }
 
     public class Avatar
     {
         public string href { get; set; }
+    }
+
+    public class Branch
+    {
+        public string name { get; set; }
+    }
+
+    public class ClosedBy
+    {
+        public string display_name { get; set; }
+        public Links links { get; set; }
+        public string type { get; set; }
+        public string uuid { get; set; }
+        public string account_id { get; set; }
+        public string nickname { get; set; }
     }
 
     public class Comments
@@ -41,32 +65,42 @@
 
     public class Commit
     {
-        public string type { get; set; }
         public string hash { get; set; }
-        public DateTime date { get; set; }
-        public Author author { get; set; }
-        public string message { get; set; }
         public Links links { get; set; }
+        public string type { get; set; }
+    }
+
+    public class Commits
+    {
         public string href { get; set; }
     }
 
-    public class Commit_Status
+    public class Decline
     {
-        public string key { get; set; }
+        public string href { get; set; }
+    }
+
+    public class Description
+    {
         public string type { get; set; }
-        public string state { get; set; }
-        public string name { get; set; }
-        public string refname { get; set; }
+        public string raw { get; set; }
+        public string markup { get; set; }
+        public string html { get; set; }
+    }
+
+    public class Destination
+    {
+        public Branch branch { get; set; }
         public Commit commit { get; set; }
-        public string url { get; set; }
         public Repository repository { get; set; }
-        public string description { get; set; }
-        public DateTime created_on { get; set; }
-        public DateTime updated_on { get; set; }
-        public Links links { get; set; }
     }
 
     public class Diff
+    {
+        public string href { get; set; }
+    }
+
+    public class Diffstat
     {
         public string href { get; set; }
     }
@@ -81,12 +115,30 @@
         public Self self { get; set; }
         public Html html { get; set; }
         public Avatar avatar { get; set; }
-        public Diff diff { get; set; }
+        public Commits commits { get; set; }
         public Approve approve { get; set; }
+
+        [JsonProperty("request-changes")]
+        public RequestChanges requestchanges { get; set; }
+        public Diff diff { get; set; }
+        public Diffstat diffstat { get; set; }
         public Comments comments { get; set; }
+        public Activity activity { get; set; }
+        public Merge merge { get; set; }
+        public Decline decline { get; set; }
         public Statuses statuses { get; set; }
-        public Patch patch { get; set; }
-        public Commit commit { get; set; }
+    }
+
+    public class Merge
+    {
+        public string href { get; set; }
+    }
+
+    public class MergeCommit
+    {
+        public string hash { get; set; }
+        public Links links { get; set; }
+        public string type { get; set; }
     }
 
     public class Owner
@@ -98,9 +150,14 @@
         public string username { get; set; }
     }
 
-    public class Patch
+    public class Participant
     {
-        public string href { get; set; }
+        public string type { get; set; }
+        public User user { get; set; }
+        public string role { get; set; }
+        public bool approved { get; set; }
+        public string state { get; set; }
+        public DateTime participated_on { get; set; }
     }
 
     public class Project
@@ -110,6 +167,37 @@
         public string uuid { get; set; }
         public string name { get; set; }
         public Links links { get; set; }
+    }
+
+    public class Pullrequest
+    {
+        public int comment_count { get; set; }
+        public int task_count { get; set; }
+        public string type { get; set; }
+        public int id { get; set; }
+        public string title { get; set; }
+        public string description { get; set; }
+        public Rendered rendered { get; set; }
+        public string state { get; set; }
+        public MergeCommit merge_commit { get; set; }
+        public bool close_source_branch { get; set; }
+        public ClosedBy closed_by { get; set; }
+        public Author author { get; set; }
+        public string reason { get; set; }
+        public DateTime created_on { get; set; }
+        public DateTime updated_on { get; set; }
+        public Destination destination { get; set; }
+        public Source source { get; set; }
+        public List<object> reviewers { get; set; }
+        public List<Participant> participants { get; set; }
+        public Links links { get; set; }
+        public Summary summary { get; set; }
+    }
+
+    public class Rendered
+    {
+        public Title title { get; set; }
+        public Description description { get; set; }
     }
 
     public class Repository
@@ -128,16 +216,44 @@
         public object parent { get; set; }
     }
 
-  
+    public class RequestChanges
+    {
+        public string href { get; set; }
+    }
+
+   
 
     public class Self
     {
         public string href { get; set; }
     }
 
+    public class Source
+    {
+        public Branch branch { get; set; }
+        public Commit commit { get; set; }
+        public Repository repository { get; set; }
+    }
+
     public class Statuses
     {
         public string href { get; set; }
+    }
+
+    public class Summary
+    {
+        public string type { get; set; }
+        public string raw { get; set; }
+        public string markup { get; set; }
+        public string html { get; set; }
+    }
+
+    public class Title
+    {
+        public string type { get; set; }
+        public string raw { get; set; }
+        public string markup { get; set; }
+        public string html { get; set; }
     }
 
     public class User
